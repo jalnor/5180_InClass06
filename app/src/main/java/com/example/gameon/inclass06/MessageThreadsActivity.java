@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -72,11 +73,15 @@ public class MessageThreadsActivity extends AppCompatActivity {
                     // Parses token from JSON
                     String res = responseBody.string();
                     JSONObject jo = new JSONObject(res);
-                    for ( int i = 0; i < jo.length(); i++ ) {
+                    JSONArray info = jo.getJSONArray("threads");
 
+
+                    for ( int i = 0; i < info.length(); i++ ) {
+                        //Log.d("InMessageThreads", "The results in JSONArray are : " + info);
                     }
+
 //                    String key = jo.getString("token");
-                    // Intent to pass data to MessageThreadsActivity
+                    //Intent to pass data to MessageThreadsActivity
 //                    Intent success = new Intent(MessageThreadsActivity.this, MessageThreadsActivity.class);
 //                    success.putExtra("Key",  key);
 //                    startActivity(success);
@@ -100,6 +105,8 @@ public class MessageThreadsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getIntent().removeExtra("Key");
+                Intent intent = new Intent(MessageThreadsActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
