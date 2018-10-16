@@ -8,8 +8,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.IOException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -66,16 +68,22 @@ public class MainActivity extends AppCompatActivity {
                                 if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 
                                 Headers responseHeaders = response.headers();
+
                                 for (int i = 0, size = responseHeaders.size(); i < size; i++) {
                                     System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
                                 }
-                                Log.d("message", "The response is " + responseHeaders);
-                                String key = responseHeaders.value(0);
+                                // Parses token from JSON
+                                String res = responseBody.string();
+                                JSONObject jo = new JSONObject(res);
+                                String key = jo.getString("token");
+                                // Intent to pass data to MessageThreadsActivity
                                 Intent success = new Intent(MainActivity.this, MessageThreadsActivity.class);
                                 success.putExtra("Key",  key);
                                 startActivity(success);
-                                System.out.println(responseBody.string());
+
                             }catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
