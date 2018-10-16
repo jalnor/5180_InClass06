@@ -87,9 +87,10 @@ public class MessageThreadsActivity extends AppCompatActivity {
         findViewById(R.id.addnewthreadBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final TextView newThreads = findViewById(R.id.newThread);
+                final EditText newThreads = findViewById(R.id.newThread);
 
-                String postBody = newThreads.toString();
+                String postBody = newThreads.getText().toString();
+                Log.d("InMessageThreads", "This is the postBody " + postBody);
                 RequestBody formBody = new FormBody.Builder()
                         .add("title", postBody)
                         .build();
