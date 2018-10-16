@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,23 +33,17 @@ public class MessageThreadsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message_threads);
         final OkHttpClient client = new OkHttpClient();
 
-        String key = getIntent().getStringExtra("Key");
-        String firstName = getIntent().getStringExtra("FirstName");
-        String lastName = getIntent().getStringExtra("LastName");
+        final String key = getIntent().getStringExtra("Key");
+        final String firstName = getIntent().getStringExtra("FirstName");
+        final String lastName = getIntent().getStringExtra("LastName");
 
         TextView user = findViewById(R.id.userName);
         String username = firstName + " " + lastName;
         user.setText(username);
-        String n = "BEARER " + key;
-
-        Log.d("InMessageThreads", "THis is concatenated string " + n);
-
-        Log.d("InMessageThreads" , "This is the extra received in MessageTheeads " + key);
-
-//        RequestBody formBody = new FormBody.Builder()
-//                .add("Authorization", n)
-//                .build();
-
+        final String n = "BEARER " + key;
+//        Log.d("InMessageThreads", "THis is concatenated string " + n);
+//
+//        Log.d("InMessageThreads" , "This is the extra received in MessageTheeads " + key);
         Request request = new Request.Builder()
                 .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread")
                 .header("Authorization", n)
@@ -69,7 +64,7 @@ public class MessageThreadsActivity extends AppCompatActivity {
                     for (int i = 0, size = responseHeaders.size(); i < size; i++) {
                         System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
                     }
-                    //System.out.println(responseBody.string());
+
                     // Parses token from JSON
                     String res = responseBody.string();
                     JSONObject jo = new JSONObject(res);
@@ -80,11 +75,6 @@ public class MessageThreadsActivity extends AppCompatActivity {
                         //Log.d("InMessageThreads", "The results in JSONArray are : " + info);
                     }
 
-//                    String key = jo.getString("token");
-                    //Intent to pass data to MessageThreadsActivity
-//                    Intent success = new Intent(MessageThreadsActivity.this, MessageThreadsActivity.class);
-//                    success.putExtra("Key",  key);
-//                    startActivity(success);
 
                 }catch (IOException e) {
                     e.printStackTrace();
@@ -97,6 +87,42 @@ public class MessageThreadsActivity extends AppCompatActivity {
         findViewById(R.id.addnewthreadBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final TextView newThreads = findViewById(R.id.newThread);
+
+                String postBody = newThreads.toString();
+                RequestBody formBody = new FormBody.Builder()
+                        .add("title", postBody)
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread/add")
+                        .header("Authorization", n)
+                        .post(formBody)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Toast.makeText(MessageThreadsActivity.this, "Thread creation failed", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        Log.d("InMessageThreads", "This is the response from server " + response);
+                        try (ResponseBody responseBody = response.body()) {
+                            if (!response.isSuccessful())
+                                throw new IOException("Unexpected code " + response);
+
+
+                            newThreads.setText("");
+
+                            Log.d("InMessageThreads", "This is the result " + responseBody);
+
+
+                        }
+                    }
+                });
+
 
             }
         });
