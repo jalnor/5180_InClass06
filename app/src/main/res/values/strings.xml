@@ -11,5 +11,11 @@
     <string name="et_rpassword">repeat password</string>
     <string name="b_cancel">cancel</string>
     <string name="b_signup">signup</string>
+    <string name="main_title">Chat Room</string>
+    <string name="signup_title">Sign Up</string>
+    <string name="message_thread_title">Message Threads</string>
+    <string name="logout_btn">Logout</string>
+    <string name="newthread_et">Add New Thread</string>
+    <string name="curr_thread">Current Threads</string>
 
 </resources>

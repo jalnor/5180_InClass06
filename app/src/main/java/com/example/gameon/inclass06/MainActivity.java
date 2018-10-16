@@ -41,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                EditText emailTV = findViewById(R.id.email);
+                final EditText emailTV = findViewById(R.id.email);
                 final String email = emailTV.getText().toString();
 
-                EditText passwordTV = findViewById(R.id.password);
+                final EditText passwordTV = findViewById(R.id.password);
                 final String password = passwordTV.getText().toString();
 
                 RequestBody formBody = new FormBody.Builder()
@@ -72,13 +72,21 @@ public class MainActivity extends AppCompatActivity {
                                 for (int i = 0, size = responseHeaders.size(); i < size; i++) {
                                     System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
                                 }
+
                                 // Parses token from JSON
                                 String res = responseBody.string();
+                                System.out.println(res);
                                 JSONObject jo = new JSONObject(res);
                                 String key = jo.getString("token");
+                                String userFName = jo.getString("user_fname");
+                                String userLName = jo.getString("user_lname");
+                                emailTV.setText("");
+                                passwordTV.setText("");
                                 // Intent to pass data to MessageThreadsActivity
                                 Intent success = new Intent(MainActivity.this, MessageThreadsActivity.class);
                                 success.putExtra("Key",  key);
+                                success.putExtra("FirstName", userFName);
+                                success.putExtra("LastName", userLName);
                                 startActivity(success);
 
                             }catch (IOException e) {
