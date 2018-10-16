@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignupActivity" />
-        <activity android:name=".MessageThreads"></activity>
+        <activity android:name=".MessageThreadsActivity"></activity>
     </application>
 
 </manifest>

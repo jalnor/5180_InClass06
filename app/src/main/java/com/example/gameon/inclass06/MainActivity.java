@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
                     client.newCall(request).enqueue(new Callback() {
                         @Override public void onFailure(Call call, IOException e) {
+                            Toast.makeText(MainActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
 
@@ -68,14 +70,16 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
                                 }
                                 Log.d("message", "The response is " + responseHeaders);
+                                String key = responseHeaders.value(0);
+                                Intent success = new Intent(MainActivity.this, MessageThreadsActivity.class);
+                                success.putExtra("Key",  key);
+                                startActivity(success);
                                 System.out.println(responseBody.string());
                             }catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
                     });
-
-
             }
         });
 

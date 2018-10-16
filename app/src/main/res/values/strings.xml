@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">InClass06</string>
-    <string name="email">Email</string>
-    />
-    <string name="password">Password</string>
-    />
+    <string name="email"></string>
+    <string name="password"></string>
     <string name="loginBtn">Log In</string>
     <string name="signupBtn">Sign Up</string>
+    <string name="et_firstname">First Name</string>
+    <string name="et_lastname">lastname</string>
+    <string name="et_email">email</string>
+    <string name="et_password">choose password</string>
+    <string name="et_rpassword">repeat password</string>
+    <string name="b_cancel">cancel</string>
+    <string name="b_signup">signup</string>
+
 </resources>

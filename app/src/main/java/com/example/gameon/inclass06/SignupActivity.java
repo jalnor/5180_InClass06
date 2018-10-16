@@ -49,7 +49,9 @@ public class SignupActivity extends AppCompatActivity {
                 String p = password.getText().toString();
                 String rp = rpassword.getText().toString();
 
-                if (rp.equals(p)) {
+                if ( f.isEmpty() || l.isEmpty() || e.isEmpty() || p.isEmpty() || rp.isEmpty() ) {
+                    Toast.makeText(SignupActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                } else if (rp.equals(p)) {
                     RequestBody formBody = new FormBody.Builder()
                             .add("fname", f)
                             .add("lname", l)
@@ -65,6 +67,7 @@ public class SignupActivity extends AppCompatActivity {
                     client.newCall(request).enqueue(new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
+                            Toast.makeText(SignupActivity.this, "Signup Failed!", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
 
@@ -78,8 +81,11 @@ public class SignupActivity extends AppCompatActivity {
                                 for (int i = 0, size = responseHeaders.size(); i < size; i++) {
                                     System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
                                 }
+                                Toast.makeText(SignupActivity.this, "Signup Successful!", Toast.LENGTH_SHORT).show();
                                 Log.d("message", "The response is " + responseHeaders);
                                 System.out.println(responseBody.string());
+
+
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

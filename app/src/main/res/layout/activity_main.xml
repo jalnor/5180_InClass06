@@ -14,6 +14,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="140dp"
         android:text="@string/email"
+        android:hint="email"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.251"
@@ -28,6 +29,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="64dp"
+        android:hint="Password"
         android:text="@string/password"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,5 +67,4 @@
         app:layout_constraintStart_toEndOf="@+id/loginBtn"
         app:layout_constraintTop_toBottomOf="@+id/password"
         app:layout_constraintVertical_bias="0.132" />
-
 </android.support.constraint.ConstraintLayout>
