@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -88,7 +91,6 @@ public class MessageThreadsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final EditText newThreads = findViewById(R.id.newThread);
-
                 String postBody = newThreads.getText().toString();
                 Log.d("InMessageThreads", "This is the postBody " + postBody);
                 RequestBody formBody = new FormBody.Builder()
@@ -114,17 +116,19 @@ public class MessageThreadsActivity extends AppCompatActivity {
                             if (!response.isSuccessful())
                                 throw new IOException("Unexpected code " + response);
 
-
-                            newThreads.setText("");
-
                             Log.d("InMessageThreads", "This is the result " + responseBody);
-
 
                         }
                     }
+
                 });
-
-
+                ListView listView= (ListView)findViewById(R.id.lv);
+                String string = newThreads.getText().toString();
+                ArrayList<String> arrayList=new ArrayList<>();
+                ArrayAdapter<String> adapter=new ArrayAdapter<String>(MessageThreadsActivity.this,android.R.layout.simple_list_item_1,android.R.id.text1,arrayList);
+                listView.setAdapter(adapter);
+                arrayList.add(string);
+                newThreads.setText("");
             }
         });
 
