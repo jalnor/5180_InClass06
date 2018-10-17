@@ -5,7 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,6 +31,9 @@ import okhttp3.ResponseBody;
 
 public class MessageThreadsActivity extends AppCompatActivity {
 
+    ArrayList<ThreadTitle> arrayList = new ArrayList<>();
+    ArrayList<String> strs = new ArrayList<>();
+    String postBody;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +48,7 @@ public class MessageThreadsActivity extends AppCompatActivity {
         String username = firstName + " " + lastName;
         user.setText(username);
         final String n = "BEARER " + key;
-//        Log.d("InMessageThreads", "THis is concatenated string " + n);
-//
-//        Log.d("InMessageThreads" , "This is the extra received in MessageTheeads " + key);
+
         Request request = new Request.Builder()
                 .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread")
                 .header("Authorization", n)
@@ -87,9 +92,9 @@ public class MessageThreadsActivity extends AppCompatActivity {
         findViewById(R.id.addnewthreadBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText newThreads = findViewById(R.id.newThread);
+                EditText newThreads = findViewById(R.id.newThread);
 
-                String postBody = newThreads.getText().toString();
+                postBody = newThreads.getText().toString();
                 Log.d("InMessageThreads", "This is the postBody " + postBody);
                 RequestBody formBody = new FormBody.Builder()
                         .add("title", postBody)
@@ -115,16 +120,11 @@ public class MessageThreadsActivity extends AppCompatActivity {
                                 throw new IOException("Unexpected code " + response);
 
 
-                            newThreads.setText("");
-
-                            Log.d("InMessageThreads", "This is the result " + responseBody);
-
-
                         }
                     }
                 });
-
-
+                newThreads.setText("");
+                addThreads(postBody);
             }
         });
 
@@ -136,5 +136,44 @@ public class MessageThreadsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+    }
+
+
+
+
+
+    public void addThreads(String name) {
+
+        ListView listView = findViewById(R.id.lv);
+        ThreadTitle tt = new ThreadTitle();
+        tt.setTitle(name);
+        Log.d("ohmy", "This is the name " + tt.getTitle());
+
+        arrayList.add(tt);
+//        TextView title = findViewById(R.id.threadTitle);
+//        title.setText(name);
+       //strs.add(name);
+
+
+
+
+
+        ThreadAdapter adapter = new ThreadAdapter(this, R.layout.thread_card, this.arrayList);
+       // Thread adapter = new ThreadAdapter(MessageThreadsActivity.this, R.layout.thread_card, arrayList);
+        listView.setAdapter(adapter);
+
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
+
+
     }
 }
