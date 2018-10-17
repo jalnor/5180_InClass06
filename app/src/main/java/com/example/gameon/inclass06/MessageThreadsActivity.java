@@ -118,13 +118,23 @@ public class MessageThreadsActivity extends AppCompatActivity {
                         try (ResponseBody responseBody = response.body()) {
                             if (!response.isSuccessful())
                                 throw new IOException("Unexpected code " + response);
-
+                            Log.d("ohmy", "This is the name " + responseBody.string());
 
                         }
                     }
                 });
                 newThreads.setText("");
                 addThreads(postBody);
+            }
+        });
+
+        ListView list = findViewById(R.id.lv);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String title = getString(position);
+
+
             }
         });
 
@@ -147,31 +157,26 @@ public class MessageThreadsActivity extends AppCompatActivity {
     public void addThreads(String name) {
 
         ListView listView = findViewById(R.id.lv);
-        ThreadTitle tt = new ThreadTitle();
-        tt.setTitle(name);
-        Log.d("ohmy", "This is the name " + tt.getTitle());
+        //ThreadTitle tt = new ThreadTitle();
+        //tt.setTitle(name);
+        //Log.d("ohmy", "This is the name " + tt.getTitle());
 
-        arrayList.add(tt);
+        //arrayList.add(tt);
 //        TextView title = findViewById(R.id.threadTitle);
 //        title.setText(name);
-       //strs.add(name);
+        strs.add(name);
 
 
 
 
 
-        ThreadAdapter adapter = new ThreadAdapter(this, R.layout.thread_card, this.arrayList);
-       // Thread adapter = new ThreadAdapter(MessageThreadsActivity.this, R.layout.thread_card, arrayList);
-        listView.setAdapter(adapter);
+        //ThreadAdapter adapter = new ThreadAdapter(this, R.layout.thread_card, this.arrayList);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(MessageThreadsActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, strs);
+        //listView.setAdapter(adapter);
 
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-            }
-        });
 
 
 
