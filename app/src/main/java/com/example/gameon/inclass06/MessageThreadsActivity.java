@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,12 +41,14 @@ public class MessageThreadsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_threads);
+
         final OkHttpClient client = new OkHttpClient();
 
         final String key = getIntent().getStringExtra("Key");
         final String firstName = getIntent().getStringExtra("FirstName");
         final String lastName = getIntent().getStringExtra("LastName");
-
+        final TextView title = (TextView) findViewById(R.id.showTitle);
+        final ImageView imageView=(ImageView) findViewById(R.id.imageButton);
         TextView user = findViewById(R.id.userName);
         String username = firstName + " " + lastName;
         user.setText(username);
@@ -124,7 +129,7 @@ public class MessageThreadsActivity extends AppCompatActivity {
                     }
                 });
                 newThreads.setText("");
-                addThreads(postBody);
+                addThreads(postBody,title, imageView);
             }
         });
 
@@ -154,25 +159,39 @@ public class MessageThreadsActivity extends AppCompatActivity {
 
 
 
-    public void addThreads(String name) {
+    public void addThreads(String name,TextView title, ImageView imageView) {
 
         ListView listView = findViewById(R.id.lv);
         //ThreadTitle tt = new ThreadTitle();
         //tt.setTitle(name);
+        //tt.setButton("close");
         //Log.d("ohmy", "This is the name " + tt.getTitle());
 
-        //arrayList.add(tt);
-//        TextView title = findViewById(R.id.threadTitle);
-//        title.setText(name);
+
+        //TextView title = findViewById(R.id.threadTitle);
+
+        //Log.d("hello","array "+arrayList.get(0).getTitle());
+        try {
+            title.setText("title");
+            imageView.setImageResource(R.drawable.test);
+
+        }
+        catch (Exception e)
+        {
+            Log.d("hello",""+e);
+        }
+        //title.setText(name);
+
+
+
+
+
+
+       // ThreadAdapter adapter = new ThreadAdapter(this, R.layout.thread_card, this.arrayList);
+       ArrayAdapter<String> adapter = new ArrayAdapter<String>(MessageThreadsActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, strs);
+        listView.setAdapter(adapter);
         strs.add(name);
-
-
-
-
-
-        //ThreadAdapter adapter = new ThreadAdapter(this, R.layout.thread_card, this.arrayList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(MessageThreadsActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, strs);
-        //listView.setAdapter(adapter);
+        //arrayList.add(tt);
 
 
 
