@@ -7,9 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +15,6 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,21 +31,20 @@ import okhttp3.ResponseBody;
 
 public class MessageThreadsActivity extends AppCompatActivity {
 
-    ArrayList<ThreadTitle> arrayList = new ArrayList<>();
+    ArrayList<Threads> t = new ArrayList<>();
     ArrayList<String> strs = new ArrayList<>();
+    Threads threads = new Threads();
     String postBody;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_threads);
-
         final OkHttpClient client = new OkHttpClient();
 
         final String key = getIntent().getStringExtra("Key");
         final String firstName = getIntent().getStringExtra("FirstName");
         final String lastName = getIntent().getStringExtra("LastName");
-        final TextView title = (TextView) findViewById(R.id.showTitle);
-        final ImageView imageView=(ImageView) findViewById(R.id.imageButton);
+
         TextView user = findViewById(R.id.userName);
         String username = firstName + " " + lastName;
         user.setText(username);
@@ -112,6 +108,7 @@ public class MessageThreadsActivity extends AppCompatActivity {
                         .build();
 
                 client.newCall(request).enqueue(new Callback() {
+
                     @Override
                     public void onFailure(Call call, IOException e) {
                         Toast.makeText(MessageThreadsActivity.this, "Thread creation failed", Toast.LENGTH_SHORT).show();
@@ -123,22 +120,71 @@ public class MessageThreadsActivity extends AppCompatActivity {
                         try (ResponseBody responseBody = response.body()) {
                             if (!response.isSuccessful())
                                 throw new IOException("Unexpected code " + response);
-                            Log.d("ohmy", "This is the name " + responseBody.string());
+                            //Log.d("ohmy", "This is the name " + responseBody.string());
+                            String served = responseBody.string();
+                            JSONObject json = new JSONObject(served);
+                            JSONObject j = json.getJSONObject("thread");
 
+                            Log.d("ohmy", "The jsonobject " + j);
+                            threads.setUfname(j.getString("user_fname"));
+                            threads.setUlname(j.getString("user_lname"));
+                            threads.setUid(j.getString("user_id"));
+                            threads.setId(j.getString("id"));
+                            threads.setTitle(j.getString("title"));
+                            threads.setCreatedAt(j.getString("created_at"));
+                            Log.d("ohmy", "This is threads " + threads.toString());
+                            t.add(threads);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
+
                 newThreads.setText("");
-                addThreads(postBody,title, imageView);
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                addThreads();
             }
         });
 
         ListView list = findViewById(R.id.lv);
+
+
+
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String title = getString(position);
 
+                Threads current = t.get(position);
+                String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread/delete/" + current.getId();
+
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Toast.makeText(MessageThreadsActivity.this, "Thread creation failed", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        try (ResponseBody responseBody = response.body()) {
+                            if (!response.isSuccessful())
+                                throw new IOException("Unexpected code " + response);
+                            Log.d("ohmy", "This is response in delete " + responseBody.string());
+
+                        }
+                    }
+                });
 
             }
         });
@@ -153,51 +199,20 @@ public class MessageThreadsActivity extends AppCompatActivity {
         });
 
 
+
+
     }
 
-
-
-
-
-    public void addThreads(String name,TextView title, ImageView imageView) {
+    public void addThreads() {
 
         ListView listView = findViewById(R.id.lv);
-        //ThreadTitle tt = new ThreadTitle();
-        //tt.setTitle(name);
-        //tt.setButton("close");
-        //Log.d("ohmy", "This is the name " + tt.getTitle());
-
-
-        //TextView title = findViewById(R.id.threadTitle);
-
-        //Log.d("hello","array "+arrayList.get(0).getTitle());
-        try {
-            title.setText("title");
-            imageView.setImageResource(R.drawable.test);
-
-        }
-        catch (Exception e)
-        {
-            Log.d("hello",""+e);
-        }
-        //title.setText(name);
-
-
-
-
-
-
-       // ThreadAdapter adapter = new ThreadAdapter(this, R.layout.thread_card, this.arrayList);
-       ArrayAdapter<String> adapter = new ArrayAdapter<String>(MessageThreadsActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, strs);
+        Log.d("ohmy", "This is the listview or at least we made iot here I think " + listView + " thread " + this.t.get(0).toString());
+        ThreadAdapter adapter = new ThreadAdapter(this, R.layout.thread_card, this.t);
+        // ArrayAdapter<String> adapter = new ArrayAdapter<>(MessageThreadsActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, strs);
         listView.setAdapter(adapter);
-        strs.add(name);
-        //arrayList.add(tt);
-
-
-
-
-
-
-
     }
+
+
+
+
 }
