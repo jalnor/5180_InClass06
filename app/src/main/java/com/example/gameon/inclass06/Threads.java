@@ -4,38 +4,49 @@ import java.io.Serializable;
 
 public class Threads implements Serializable {
 
-    String ufname;
-    String ulname;
-    String uid;
+    String user_fname;
+    String user_lname;
+    String user_id;
     String id;
     String title;
-    String createdAt;
+    String created_at;
+
+
 
     public Threads() {
     }
 
-    public String getUfname() {
-        return ufname;
+    public Threads(String user_fname, String user_lname, String user_id, String id, String title, String created_at) {
+        this.user_fname = user_fname;
+        this.user_lname = user_lname;
+        this.user_id = user_id;
+        this.id = id;
+        this.title = title;
+        this.created_at = created_at;
     }
 
-    public void setUfname(String ufname) {
-        this.ufname = ufname;
+    public String getUser_fname() {
+        return user_fname;
     }
 
-    public String getUlname() {
-        return ulname;
+    public void setUser_fname(String user_fname) {
+        this.user_fname = user_fname;
     }
 
-    public void setUlname(String ulname) {
-        this.ulname = ulname;
+    public String getUser_lname() {
+        return user_lname;
     }
 
-    public String getUid() {
-        return uid;
+    public void setUser_lname(String user_lname) {
+        this.user_lname = user_lname;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getId() {
@@ -54,23 +65,23 @@ public class Threads implements Serializable {
         this.title = title;
     }
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
     @Override
     public String toString() {
         return "Threads{" +
-                "ufname='" + ufname + '\'' +
-                ", ulname='" + ulname + '\'' +
-                ", uid='" + uid + '\'' +
+                "user_fname='" + user_fname + '\'' +
+                ", user_lname='" + user_lname + '\'' +
+                ", user_id='" + user_id + '\'' +
                 ", id='" + id + '\'' +
                 ", title='" + title + '\'' +
-                ", createdAt='" + createdAt + '\'' +
+                ", created_at='" + created_at + '\'' +
                 '}';
     }
 }

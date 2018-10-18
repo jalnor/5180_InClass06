@@ -14,36 +14,52 @@ import java.util.List;
 public class ThreadAdapter extends ArrayAdapter<Threads> {
 
 
+    private List<Threads> threads;
+    private int resource;
+    private Context context;
+
     public ThreadAdapter(@NonNull Context context, int resource, @NonNull List<Threads> objects) {
         super(context, resource, objects);
+        this.context = context;
+        this.resource = resource;
+        this.threads = objects;
+
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        Threads str = getItem(position);
+
         ViewHolder vh = null;
+        //Threads str = getItem(position);
 
         if ( convertView == null ) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.thread_card, parent, false);
             vh = new ViewHolder();
+            vh.Threads = threads.get(position);
             vh.thread = convertView.findViewById(R.id.threadTitle);
-            vh.btn = convertView.findViewById(R.id.imageView);
+            vh.removeThread = convertView.findViewById(R.id.imageView);
+            vh.removeThread.setTag(vh.Threads);
             convertView.setTag(vh);
         }else {
             vh = (ViewHolder) convertView.getTag();
         }
+
+
         try {
-            vh.thread.setText(str.getTitle());
-        } catch (Exception e ) {
+            vh.thread.setText(vh.Threads.getTitle());
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+
         return convertView;
     }
 
     private static class ViewHolder {
+        Threads Threads;
         TextView thread;
-        ImageView btn;
+        ImageView removeThread;
     }
 }
