@@ -17,19 +17,20 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        setTitle("Chatroom");
 
 
         Threads thread = (Threads) getIntent().getSerializableExtra("Thread");
         Log.d("oh", "this is the thread received " + thread);
         String key = getIntent().getStringExtra("Key");
-        ///String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/messages/" + thread.getId();
+        String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/messages/" + thread.getId();
         String body = null;
 
         TextView title = findViewById(R.id.thread_title_tv);
         title.setText(thread.getTitle());
 
 
-        //new GetRequestsAsync(MessageActivity.this).execute(url, body, key);
+        new GetRequestsAsync(MessageActivity.this).execute(url, body, key);
 
 
 
@@ -38,6 +39,7 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
             @Override
             public void onClick(View v) {
                 Intent home = new Intent(MessageActivity.this, MessageThreadsActivity.class);
+                finish();
             }
         });
 
