@@ -34,7 +34,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/homeButton" />
+        app:srcCompat="@drawable/homebutton" />
 
     <ImageView
         android:id="@+id/sendMessage"
@@ -51,7 +51,7 @@
         app:layout_constraintLeft_toRightOf="@+id/enterMessage"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/messageList"
-        app:srcCompat="@drawable/sendButton" />
+        app:srcCompat="@drawable/sendbutton" />
 
     <EditText
         android:id="@+id/enterMessage"
