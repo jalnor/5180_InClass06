@@ -72,12 +72,16 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String threadName = findViewById(R.id.threadTitle).toString();
+                Threads thread = adapter.getItem(position);
+
+                Log.d("oh", "This is the Thread going to messageActivity " + thread);
+
+
                 Intent intent = new Intent(MessageThreadsActivity.this, MessageActivity.class);
                 intent.putExtra("Key", n);
                 intent.putExtra("FirstName", firstName);
                 intent.putExtra("LastName", lastName);
-                intent.putExtra("Thread", threadName);
+                intent.putExtra("Thread", thread);
                 startActivity(intent);
             }
         });
@@ -144,6 +148,8 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
         Log.d("oh", "This is userTHreads in setListView " + userThreads.toString() + " the flag is " + addNewflag);
 
     }
+
+
 
     public void removeThread(View view) {
         flag = "removeFlag";

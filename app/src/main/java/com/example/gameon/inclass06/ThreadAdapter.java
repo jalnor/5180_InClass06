@@ -30,6 +30,9 @@ public class ThreadAdapter extends ArrayAdapter<Threads> {
         return super.getPosition(item);
     }
 
+
+
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -60,5 +63,6 @@ public class ThreadAdapter extends ArrayAdapter<Threads> {
         Threads threads;
         TextView thread;
         ImageView removeThread;
+
     }
 }
