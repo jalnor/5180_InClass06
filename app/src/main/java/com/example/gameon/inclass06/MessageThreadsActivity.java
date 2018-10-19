@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.google.gson.Gson;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
@@ -62,10 +64,25 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
                 postBody = newThreads.getText().toString();
                 String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread/add";
                 new GetRequestsAsync(MessageThreadsActivity.this).execute(url, postBody, n);
-                flag = "addNewflag";
+                flag = "addNewFlag";
                 newThreads.setText("");
             }
         });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String threadName = findViewById(R.id.threadTitle).toString();
+                Intent intent = new Intent(MessageThreadsActivity.this, MessageActivity.class);
+                intent.putExtra("Key", n);
+                intent.putExtra("FirstName", firstName);
+                intent.putExtra("LastName", lastName);
+                intent.putExtra("Thread", threadName);
+                startActivity(intent);
+            }
+        });
+
+
 
         findViewById(R.id.imageButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,13 +98,15 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
     public void passJson(JSONObject json) {
         Log.d("oh", "This is json comning from asynctask" + json + " the allFlag is " + getAllFlag + " addFlag " + addNewflag);
         this.json = json;
+
         if ( getAllFlag ) {
             try {
-                JSONObject temp = this.json.getJSONObject("threads");
-
-                this.allThreads.add(this.gson.fromJson(temp.toString(), Threads.class));
-                Log.d("oh", "This is the first in allthreads  " + this.allThreads.get(0).toString());
-
+                JSONArray temp = this.json.getJSONArray("threads");
+                for ( int i = 0; i < temp.length(); i++ ) {
+                    this.allThreads.add(this.gson.fromJson(temp.get(i).toString(), Threads.class));
+                    Log.d("oh", "This is the first in allthreads  " + this.allThreads.get(0).toString());
+                }
+                getAllFlag = false;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -100,6 +119,7 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
                 e.printStackTrace();
             }
         }
+        flag = "";
     }
 
     @Override
@@ -108,26 +128,29 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
         if (progress == 100) {
             if (flag.equals("getAllFlag")) {
                 getAllFlag = true;
-            } else {
+            } else if (flag.equals("addNewFlag"))  {
                 addNewflag = true;
+            } else if (flag.equals("removeFlag")) {
+                addNewflag = false;
             }
         }
     }
-
-
 
     public void setListView() throws JSONException {
 
         JSONObject temp = this.json.getJSONObject("thread");
         adapter.add(this.gson.fromJson(temp.toString(), Threads.class));
-        //userThreads.add(this.gson.fromJson(temp.toString(), Threads.class));
-        Log.d("oh", "This is userTHreads in setListView " + userThreads.toString());
+        addNewflag = false;
+        Log.d("oh", "This is userTHreads in setListView " + userThreads.toString() + " the flag is " + addNewflag);
+
     }
 
     public void removeThread(View view) {
+        flag = "removeFlag";
         Threads thread = (Threads) view.getTag();
 
         System.out.println("Value in removeThread " + thread);
+        //userThreads.remove(thread);
         adapter.remove(thread);
         String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread/delete/" + thread.getId();
         String body = null;

@@ -23,13 +23,16 @@ public class ThreadAdapter extends ArrayAdapter<Threads> {
         this.context = context;
         this.resource = resource;
         this.threads = objects;
+    }
 
+    @Override
+    public int getPosition(@Nullable Threads item) {
+        return super.getPosition(item);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
 
         ViewHolder vh = null;
         //Threads str = getItem(position);
@@ -37,28 +40,24 @@ public class ThreadAdapter extends ArrayAdapter<Threads> {
         if ( convertView == null ) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.thread_card, parent, false);
             vh = new ViewHolder();
-            vh.Threads = threads.get(position);
+            vh.threads = threads.get(position);
             vh.thread = convertView.findViewById(R.id.threadTitle);
             vh.removeThread = convertView.findViewById(R.id.imageView);
-            vh.removeThread.setTag(vh.Threads);
+            vh.removeThread.setTag(vh.threads);
             convertView.setTag(vh);
         }else {
             vh = (ViewHolder) convertView.getTag();
         }
 
-
         try {
-            vh.thread.setText(vh.Threads.getTitle());
+            vh.thread.setText(vh.threads.getTitle());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return convertView;
     }
-
     private static class ViewHolder {
-        Threads Threads;
+        Threads threads;
         TextView thread;
         ImageView removeThread;
     }
