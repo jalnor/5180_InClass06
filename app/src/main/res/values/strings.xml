@@ -18,5 +18,9 @@
     <string name="newthread_et">Add New Thread</string>
     <string name="curr_thread">Current Threads</string>
     <string name="btn_whatever">button</string>
+    <string name="placeHolder">Place Holder</string>
+    <string name="return_to_main_page">Return to Main Page</string>
+    <string name="send_message">Send Message</string>
+    <string name="type_message_to_send">Type Message to Send</string>
 
 </resources>
