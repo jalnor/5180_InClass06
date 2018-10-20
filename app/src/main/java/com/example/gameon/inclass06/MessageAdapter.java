@@ -59,8 +59,8 @@ public class MessageAdapter extends ArrayAdapter<Messages>{
                 vh.message.setText(vh.messages.getMessage());
                 //String uname = vh.Messages.getUsername();
                 vh.username.setText(vh.messages.getUsername());
-                //need to define pretty
-               // vh.pretty.setText(vh.Messages.getPretty());
+                //need to define pretty time
+               //vh.pretty.setText(vh.Messages.getPretty());
             } catch (Exception e) {
                 e.printStackTrace();
             }
