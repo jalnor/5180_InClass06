@@ -30,7 +30,6 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
         TextView title = findViewById(R.id.thread_title_tv);
         title.setText(thread.getTitle());
 
-
         new GetRequestsAsync(MessageActivity.this).execute(url, body, key);
 
 

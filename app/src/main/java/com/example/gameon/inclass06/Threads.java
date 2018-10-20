@@ -25,8 +25,6 @@ public class Threads implements Serializable {
         this.id = id;
         this.title = title;
         this.created_at = created_at;
-        this.message=message;
-        this.pretty=pretty;
     }
 
     public String getUser_fname() {
@@ -77,22 +75,6 @@ public class Threads implements Serializable {
         this.created_at = created_at;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getPretty() {
-        return pretty;
-    }
-
-    public void setPretty(String pretty) {
-        this.pretty = pretty;
-    }
-
     @Override
     public String toString() {
         return "Threads{" +
@@ -102,8 +84,6 @@ public class Threads implements Serializable {
                 ", id='" + id + '\'' +
                 ", title='" + title + '\'' +
                 ", created_at='" + created_at + '\'' +
-                ", message='" + message + '\'' +
-                ", pretty='" + pretty + '\'' +
                 '}';
     }
 }

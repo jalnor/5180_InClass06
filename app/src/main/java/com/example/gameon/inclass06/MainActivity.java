@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
                     client.newCall(request).enqueue(new Callback() {
                         @Override public void onFailure(Call call, IOException e) {
-                            Toast.makeText(MainActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
 

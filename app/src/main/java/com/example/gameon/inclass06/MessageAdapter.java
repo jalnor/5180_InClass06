@@ -11,32 +11,38 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class ThreadAdapterChatroom extends ArrayAdapter<Threads>{
+public class MessageAdapter extends ArrayAdapter<Messages>{
 
-        private List<Threads> threads;
+        private List<Messages> messages;
         private int resource;
         private Context context;
 
-        public ThreadAdapterChatroom(@NonNull Context context, int resource, @NonNull List<Threads> objects) {
+        public MessageAdapter (@NonNull Context context, int resource, @NonNull List<Messages> objects) {
             super(context, resource, objects);
             this.context = context;
             this.resource = resource;
-            this.threads = objects;
+            this.messages = objects;
 
         }
 
-        @NonNull
+    @Override
+    public int getPosition(@Nullable Messages item) {
+        return super.getPosition(item);
+    }
+
+
+    @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
 
-            com.example.gameon.inclass06.ThreadAdapterChatroom.ViewHolder vh = null;
+            com.example.gameon.inclass06.MessageAdapter.ViewHolder vh = null;
             //Threads str = getItem(position);
 
             if ( convertView == null ) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.thread_card_chatroom, parent, false);
-                vh = new com.example.gameon.inclass06.ThreadAdapterChatroom.ViewHolder();
-                vh.Threads = threads.get(position);
+                vh = new com.example.gameon.inclass06.MessageAdapter.ViewHolder();
+                vh.messages = messages.get(position);
                 vh.message = convertView.findViewById(R.id.tv_message);
                 vh.username = convertView.findViewById(R.id.tv_username);
                 vh.pretty = convertView.findViewById(R.id.tv_pretty);
@@ -44,17 +50,17 @@ public class ThreadAdapterChatroom extends ArrayAdapter<Threads>{
                 //vh.removeThread.setTag(vh.Threads);
                 convertView.setTag(vh);
             }else {
-                vh = (com.example.gameon.inclass06.ThreadAdapterChatroom.ViewHolder) convertView.getTag();
+                vh = (com.example.gameon.inclass06.MessageAdapter.ViewHolder) convertView.getTag();
             }
 
 
             try {
                 //need to set the message from message edittext
-                vh.message.setText(vh.Threads.getMessage());
-                String uname = vh.Threads.getUser_fname() + vh.Threads.getUser_lname();
-                vh.username.setText(uname);
+                vh.message.setText(vh.messages.getMessage());
+                //String uname = vh.Messages.getUsername();
+                vh.username.setText(vh.messages.getUsername());
                 //need to define pretty
-                vh.pretty.setText(vh.Threads.getPretty());
+               // vh.pretty.setText(vh.Messages.getPretty());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -64,7 +70,7 @@ public class ThreadAdapterChatroom extends ArrayAdapter<Threads>{
         }
 
         private static class ViewHolder {
-            Threads Threads;
+            Messages messages;
             TextView message, username, pretty;
            // ImageView removeThread;
         }

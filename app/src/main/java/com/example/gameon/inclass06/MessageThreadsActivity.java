@@ -82,6 +82,7 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
                 intent.putExtra("FirstName", firstName);
                 intent.putExtra("LastName", lastName);
                 intent.putExtra("Thread", thread);
+//                intent.putExtra("Createdat", created)
                 startActivity(intent);
             }
         });
