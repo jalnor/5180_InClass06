@@ -46,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
                 final EditText passwordTV = findViewById(R.id.password);
                 final String password = passwordTV.getText().toString();
 
+                String status = getIntent().getStringExtra("status");
+                if ( status != null && status.equals("Failed") ) {
+                    Toast.makeText(MainActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
+                }
+
                 if (email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(MainActivity.this, "Enter Credentials", Toast.LENGTH_SHORT).show();
                 } else {
@@ -64,8 +69,12 @@ public class MainActivity extends AppCompatActivity {
                     client.newCall(request).enqueue(new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
-                            Toast.makeText(MainActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
+//
                             e.printStackTrace();
+                            Intent back = new Intent(MainActivity.this, MainActivity.class);
+                            back.putExtra("status", "Failed");
+                            startActivity(back);
+                            finish();
                         }
 
                         @Override
@@ -88,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                                 user.setUser_fname(jo.getString("user_fname"));
                                 user.setUser_lname(jo.getString("user_lname"));
                                 user.setUser_id(jo.getString("user_id"));
+                                user.setToken(jo.getString("token"));
 
 
                                 SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
@@ -97,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                                 editor.putString("userFName", user.getUser_fname());
                                 editor.putString("userLName", user.getUser_lname());
                                 editor.putString("userID", user.getUser_id());
+                                editor.putString("token", user.getToken());
                                 editor.commit();
 
                                 emailTV.setText("");

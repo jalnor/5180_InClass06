@@ -21,7 +21,8 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
 
     ArrayList<Threads> allThreads = new ArrayList<>();
     ArrayList<Threads> userThreads = new ArrayList<>();
-    String n, postBody, body2, flag;
+    String n, postBody, body2;
+    Threads currentThread;
     Gson gson = new Gson();
     JSONObject json = null;
     int progress = 0;
@@ -63,7 +64,7 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
         String username = firstName + " " + lastName;
         userName.setText(username);
         n = "BEARER " + key;
-
+        body2 = null;
         getAllThreads();
 
         findViewById(R.id.addnewthreadBtn).setOnClickListener(new View.OnClickListener() {
@@ -77,6 +78,8 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
                 newThreads.setText("");
             }
         });
+
+
 
         findViewById(R.id.imageButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,11 +103,10 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
                 }
                 JSONArray temp = this.json.getJSONArray("threads");
                 for (int i = 0; i < temp.length(); i++) {
-                    if ( temp.getJSONObject(i).getString("user_id").equals(userID) ) {
-                        allThreads.add(this.gson.fromJson(temp.get(i).toString(), Threads.class));
-                    }
+//                    if ( temp.getJSONObject(i).getString("user_id").equals(userID) ) {
+                        this.allThreads.add(this.gson.fromJson(temp.get(i).toString(), Threads.class));
+//                    }
                 }
-                //adapter.clear();
                 setListView();
 //                getAllFlag = false;
             } else if ( this.json.has("thread") ) {
@@ -140,6 +142,16 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
         new GetRequestsAsync(MessageThreadsActivity.this).execute(url, body, n, body2);
         getAllThreads();
     }
+
+    @Override
+    public void currentThread(Threads currentThread) {
+        Log.d("ohMan", "THis is in MessageThread " + currentThread);
+        Intent intent = new Intent(MessageThreadsActivity.this, MessageActivity.class);
+        intent.putExtra("Thread", currentThread);
+        startActivity(intent);
+    }
+
+
 }
 
 

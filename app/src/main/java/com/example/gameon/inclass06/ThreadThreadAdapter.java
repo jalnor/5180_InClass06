@@ -2,6 +2,7 @@ package com.example.gameon.inclass06;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +30,23 @@ public class ThreadThreadAdapter extends RecyclerView.Adapter<ThreadThreadAdapte
         View threadCard = LayoutInflater.from(parent.getContext()).inflate(R.layout.thread_card, parent, false);
         ViewHolder vh = new ViewHolder(threadCard);
         vh.dt = this.dt;
+
         return vh;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Threads thread = threads.get(position);
+        final Threads thread = threads.get(position);
         holder.threadTitle.setText(thread.title);
         holder.threadId = thread.id;
+        holder.currentThread = thread;
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("ohMan", "This is inside holder.onCLick in adapter " + thread);
+                dt.currentThread(thread);
+            }
+        });
 
         if (thread.user_id.equals(this.userID) ) {
             holder.imageView.setVisibility(View.VISIBLE);
@@ -52,12 +62,16 @@ public class ThreadThreadAdapter extends RecyclerView.Adapter<ThreadThreadAdapte
         return threads.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+
+
+    public static class ViewHolder extends RecyclerView.ViewHolder   {
 
         public TextView threadTitle;
         public ImageView imageView;
         public String threadId;
         public DeleteThreadInterface dt;
+        public Threads currentThread;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -71,6 +85,7 @@ public class ThreadThreadAdapter extends RecyclerView.Adapter<ThreadThreadAdapte
                 }
             });
         }
+
 
 
     }

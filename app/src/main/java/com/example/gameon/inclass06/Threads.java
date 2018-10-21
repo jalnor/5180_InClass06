@@ -26,6 +26,8 @@ public class Threads implements Serializable {
         this.created_at = created_at;
     }
 
+
+
     public String getUser_fname() {
         return user_fname;
     }

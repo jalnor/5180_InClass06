@@ -6,6 +6,7 @@ public class User implements Serializable {
     String user_fname;
     String user_lname;
     String user_id;
+    String token;
 
     public User() {
     }
@@ -34,12 +35,21 @@ public class User implements Serializable {
         this.user_id = user_id;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "user_fname='" + user_fname + '\'' +
                 ", user_lname='" + user_lname + '\'' +
                 ", user_id='" + user_id + '\'' +
+                ", token='" + token + '\'' +
                 '}';
     }
 }

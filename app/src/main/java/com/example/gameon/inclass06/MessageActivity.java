@@ -1,8 +1,12 @@
 package com.example.gameon.inclass06;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -18,16 +22,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MessageActivity extends AppCompatActivity implements GetRequestsAsync.GetJson {
+public class MessageActivity extends AppCompatActivity implements GetRequestsAsync.GetJson, DeleteMessageInterface {
 
     JSONObject json;
     Gson gson = new Gson();
-    String url, key, body, body2, flag;
-    Threads thread;
-    ListView listOfMessages;
+    String url, key, body, body2, flag, userID, token;
+
     ArrayList<Messages> messages = new ArrayList<>();
-    MessageAdapter adapter;
     TextView title;
+    Threads thread;
+    private RecyclerView messageRecyclerView;
+    private RecyclerView.Adapter messageAdapter;
+    private RecyclerView.LayoutManager messageLayoutManager;
 
 
     @Override
@@ -36,25 +42,31 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
         setContentView(R.layout.activity_message);
         setTitle("Chatroom");
 
-        listOfMessages = findViewById(R.id.message_lv);
-        adapter = new MessageAdapter(MessageActivity.this, R.layout.thread_card_chatroom, messages);
-        listOfMessages.setAdapter(adapter);
+        SharedPreferences sharedPref = getSharedPreferences("userPreferences", Context.MODE_PRIVATE);
+        userID = sharedPref.getString("userID", null);
+        key = sharedPref.getString("token", null);
+        token = "Bearer " + key;
+        Log.d("ohMan", "This is the key from shared preferences " + key);
 
 
-        thread = (Threads) getIntent().getSerializableExtra("Thread");
-        Log.d("oh", "this is the thread received " + thread);
-        key = getIntent().getStringExtra("Key");
-        url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/messages/" + thread.getId();
-        body = null;
-        body2 = null;
+        messageRecyclerView = findViewById(R.id.messageRecyclerView);
+        messageRecyclerView.setHasFixedSize(true);
+
+        messageLayoutManager = new LinearLayoutManager(this);
+        messageRecyclerView.setLayoutManager(messageLayoutManager);
+
+        messageAdapter = new MessageAdapter(messages, userID, this);
+        messageRecyclerView.setAdapter(messageAdapter);
+
+
+        thread =  (Threads) getIntent().getSerializableExtra("Thread");
+//        Log.d("oh", "this is the thread received " + thread);
+        //key = getIntent().getStringExtra("Key");
 
         title = findViewById(R.id.thread_title_tv);
         title.setText(thread.getTitle());
-
-        new GetRequestsAsync(MessageActivity.this).execute(url, body, key, body2);
-        flag = "getAllMessages";
-
-
+        body2 = null;
+        getAllMessages();
 
         findViewById(R.id.home_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,20 +85,18 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
 
                 EditText message = findViewById(R.id.message_body);
 
-
                 url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/message/add?";
                 body = thread.getId();
                 body2 = message.getText().toString();
 
-                new GetRequestsAsync(MessageActivity.this).execute(url, body, key, body2);
+                new GetRequestsAsync(MessageActivity.this).execute(url, body, token, body2);
                 message.setText("");
-                flag = "sendMessage";
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                listMessages();
+
             }
         });
 
@@ -98,19 +108,20 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
         this.json = json;
         Log.d("oh", "This is the value of the flag: " + flag);
         try {
-            if (flag.equals("getAllMessages")) {
-                messages.clear();
+            if ( this.json.has("messages")) {
+                if( this.messages != null ) {
+                    this.messages.clear();
+                }
                 JSONArray messageArray = this.json.getJSONArray("messages");
                 for (int i = 0; i < messageArray.length(); i++) {
-                    messages.add(gson.fromJson(messageArray.get(i).toString(), Messages.class));
+                    this.messages.add(gson.fromJson(messageArray.get(i).toString(), Messages.class));
                 }
-            } else if (flag.equals("sendMessage")) {
-                JSONObject newMessage = this.json.getJSONObject("message");
-                messages.add(gson.fromJson(newMessage.toString(), Messages.class));
+                setMessageView();
+            } else if ( this.json.has("message") ) {
+                getAllMessages();
             }
 
             Log.d("oh", "this is the json at passjson in message " + json);
-            flag = "";
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -122,17 +133,25 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
 
     }
 
-    public void listMessages() {
+    public void getAllMessages() {
+        url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/messages/" + thread.getId();
+        body = null;
+        body2 = null;
 
-        adapter.addAll(messages);
+        new GetRequestsAsync(MessageActivity.this).execute(url, body, token, body2);
     }
 
-    public void removeMessage(View view) {
-        flag = "removeFlag";
-        Messages message = (Messages) view.getTag();
-        adapter.remove(message);
-        String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/message/delete/" + message.getId();
+    public void setMessageView() {
+        messageAdapter.notifyDataSetChanged();
+
+    }
+
+
+    @Override
+    public void deleteMessage(String id) {
+        String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/message/delete/" + id;
         String body = null;
-        new GetRequestsAsync(MessageActivity.this).execute(url,body,key);
+        body2 = null;
+        new GetRequestsAsync(MessageActivity.this).execute(url, body, token, body2);
     }
 }
