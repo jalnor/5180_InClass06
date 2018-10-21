@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(MainActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
                             // Intent to pass data to MessageThreadsActivity
                             Intent success = new Intent(MainActivity.this, MessageThreadsActivity.class);
                             success.putExtra("Key", user.getToken());
