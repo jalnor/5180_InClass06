@@ -8,7 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>{
 
@@ -38,6 +43,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         holder.userFName.setText(msg.user_fname);
         holder.userLName.setText(msg.user_lname);
         holder.pretty.setText(msg.created_at);
+        holder.pretty.setText(convertpretty(msg.created_at));
         holder.messageId = msg.id;
 
         if (msg.user_id.equals(this.userId) ) {
@@ -47,6 +53,26 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
 
     }
+
+    String convertpretty (String dateString)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+        Date convertedDate = new Date();
+
+        try {
+            convertedDate = dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        PrettyTime p = new PrettyTime();
+
+        String datetime = p.format(convertedDate);
+
+        return datetime;
+    }
+
+
 
     @Override
     public int getItemCount() {
