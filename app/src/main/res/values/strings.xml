@@ -20,5 +20,7 @@
     <string name="btn_whatever">button</string>
     <string name="message_et">Type Message To Send</string>
     <string name="user_shared_preferences">UserPreferences</string>
+    <string name="login_error">Login Error</string>
+    <string name="login_successful">Login Success!</string>
 
 </resources>

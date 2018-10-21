@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onFailure(Call call, IOException e) {
 //
                             e.printStackTrace();
-                            Intent back = new Intent(MainActivity.this, MainActivity.class);
+                            Intent back = new Intent(getApplicationContext(), MainActivity.class);
                             back.putExtra("status", "Failed");
                             startActivity(back);
                             finish();
@@ -80,14 +80,20 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             try (ResponseBody responseBody = response.body()) {
-                                if (!response.isSuccessful())
+                                if (!response.isSuccessful()) {
+
+                                    Intent back = new Intent(getApplicationContext(), MainActivity.class);
+                                    back.putExtra("status", "Failed");
+                                    startActivity(back);
+                                    finish();
                                     throw new IOException("Unexpected code " + response);
+                                }
 
                                 Headers responseHeaders = response.headers();
 
-                                for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                                    System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                                }
+//                                for (int i = 0, size = responseHeaders.size(); i < size; i++) {
+//                                    System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+//                                }
 
                                 // Parses token from JSON
                                 String res = responseBody.string();
