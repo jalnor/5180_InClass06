@@ -10,8 +10,7 @@ public class Threads implements Serializable {
     String id;
     String title;
     String created_at;
-    String message;
-    String pretty;
+
 
 
 

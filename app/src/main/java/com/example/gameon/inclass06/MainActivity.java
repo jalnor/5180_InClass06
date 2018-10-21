@@ -1,6 +1,8 @@
 package com.example.gameon.inclass06;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +26,7 @@ import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    User user = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +35,10 @@ public class MainActivity extends AppCompatActivity {
         final OkHttpClient client = new OkHttpClient();
 
 
-
-
-
-
         findViewById(R.id.loginBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 
                 final EditText emailTV = findViewById(R.id.email);
                 final String email = emailTV.getText().toString();
@@ -47,25 +46,33 @@ public class MainActivity extends AppCompatActivity {
                 final EditText passwordTV = findViewById(R.id.password);
                 final String password = passwordTV.getText().toString();
 
-                RequestBody formBody = new FormBody.Builder()
-                    .add("email", email)
-                    .add("password", password)
-                    .build();
+                if (email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Enter Credentials", Toast.LENGTH_SHORT).show();
+                } else {
 
-                Request request = new Request.Builder()
-                        .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/login")
-                        .post(formBody)
-                        .build();
+
+                    RequestBody formBody = new FormBody.Builder()
+                            .add("email", email)
+                            .add("password", password)
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/login")
+                            .post(formBody)
+                            .build();
 
                     client.newCall(request).enqueue(new Callback() {
-                        @Override public void onFailure(Call call, IOException e) {
-//                            Toast.makeText(MainActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Toast.makeText(MainActivity.this, "Login Failed!", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
 
-                        @Override public void onResponse(Call call, Response response) throws IOException {
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
                             try (ResponseBody responseBody = response.body()) {
-                                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                                if (!response.isSuccessful())
+                                    throw new IOException("Unexpected code " + response);
 
                                 Headers responseHeaders = response.headers();
 
@@ -78,24 +85,37 @@ public class MainActivity extends AppCompatActivity {
                                 System.out.println(res);
                                 JSONObject jo = new JSONObject(res);
                                 String key = jo.getString("token");
-                                String userFName = jo.getString("user_fname");
-                                String userLName = jo.getString("user_lname");
+                                user.setUser_fname(jo.getString("user_fname"));
+                                user.setUser_lname(jo.getString("user_lname"));
+                                user.setUser_id(jo.getString("user_id"));
+
+
+                                SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(
+                                        "userPreferences", Context.MODE_PRIVATE);
+
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString("userFName", user.getUser_fname());
+                                editor.putString("userLName", user.getUser_lname());
+                                editor.putString("userID", user.getUser_id());
+                                editor.commit();
+
                                 emailTV.setText("");
                                 passwordTV.setText("");
                                 // Intent to pass data to MessageThreadsActivity
                                 Intent success = new Intent(MainActivity.this, MessageThreadsActivity.class);
-                                success.putExtra("Key",  key);
-                                success.putExtra("FirstName", userFName);
-                                success.putExtra("LastName", userLName);
+                                success.putExtra("Key", key);
+                                success.putExtra("User", user);
                                 startActivity(success);
+                                finish();
 
-                            }catch (IOException e) {
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                     });
+                }
             }
         });
 

@@ -1,34 +1,34 @@
 package com.example.gameon.inclass06;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import com.google.gson.Gson;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 
-public class MessageThreadsActivity extends AppCompatActivity implements GetRequestsAsync.GetJson {
+public class MessageThreadsActivity extends AppCompatActivity implements GetRequestsAsync.GetJson, DeleteThreadInterface {
 
     ArrayList<Threads> allThreads = new ArrayList<>();
     ArrayList<Threads> userThreads = new ArrayList<>();
-    String n;
+    String n, postBody, body2, flag;
     Gson gson = new Gson();
     JSONObject json = null;
-    String postBody;
     int progress = 0;
-    ThreadAdapter adapter;
-    boolean getAllFlag = false;
-    boolean addNewflag = false;
-    String flag;
+    String userID;
+    private RecyclerView threadRecyclerView;
+    private RecyclerView.Adapter threadAdapter;
+    private RecyclerView.LayoutManager threadLayoutManager;
 
 
 
@@ -39,55 +39,44 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
 
 
         final String key = getIntent().getStringExtra("Key");
-        final String firstName = getIntent().getStringExtra("FirstName");
-        final String lastName = getIntent().getStringExtra("LastName");
+        final User user = (User) getIntent().getSerializableExtra("User");
+        final String firstName = user.getUser_fname();
+        final String lastName = user.getUser_lname();
 
-        ListView listView = findViewById(R.id.lv);
-        adapter = new ThreadAdapter(MessageThreadsActivity.this, R.layout.thread_card, userThreads);
-        listView.setAdapter(adapter);
+        SharedPreferences sharedPref = getSharedPreferences("userPreferences", Context.MODE_PRIVATE);
+        final String userFName = sharedPref.getString("userFName", null);
+        final String userLName = sharedPref.getString("userLName", null);
+        userID = sharedPref.getString("userID", null);
+
+        threadRecyclerView = findViewById(R.id.threadRecyclerView);
+        threadRecyclerView.setHasFixedSize(true);
+
+        threadLayoutManager = new LinearLayoutManager(this);
+        threadRecyclerView.setLayoutManager(threadLayoutManager);
+
+        threadAdapter = new ThreadThreadAdapter(allThreads, userID, this);
+        threadRecyclerView.setAdapter(threadAdapter);
 
 
-        TextView user = findViewById(R.id.userName);
+
+        TextView userName = findViewById(R.id.userName);
         String username = firstName + " " + lastName;
-        user.setText(username);
+        userName.setText(username);
         n = "BEARER " + key;
 
-        String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread";
-        String body = null;
-        new GetRequestsAsync(MessageThreadsActivity.this).execute(url, body, n);
-        flag = "getAllFlag";
+        getAllThreads();
 
         findViewById(R.id.addnewthreadBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditText newThreads = findViewById(R.id.newThread);
                 postBody = newThreads.getText().toString();
+                body2 = null;
                 String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread/add";
-                new GetRequestsAsync(MessageThreadsActivity.this).execute(url, postBody, n);
-                flag = "addNewFlag";
+                new GetRequestsAsync(MessageThreadsActivity.this).execute(url, postBody, n, body2);
                 newThreads.setText("");
             }
         });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Threads thread = adapter.getItem(position);
-
-                Log.d("oh", "This is the Thread going to messageActivity " + thread);
-
-
-                Intent intent = new Intent(MessageThreadsActivity.this, MessageActivity.class);
-                intent.putExtra("Key", n);
-                intent.putExtra("FirstName", firstName);
-                intent.putExtra("LastName", lastName);
-                intent.putExtra("Thread", thread);
-//                intent.putExtra("Createdat", created)
-                startActivity(intent);
-            }
-        });
-
-
 
         findViewById(R.id.imageButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,67 +90,55 @@ public class MessageThreadsActivity extends AppCompatActivity implements GetRequ
 
     @Override
     public void passJson(JSONObject json) {
-        Log.d("oh", "This is json comning from asynctask" + json + " the allFlag is " + getAllFlag + " addFlag " + addNewflag);
+//        Log.d("oh", "This is json comning from asynctask" + json + " the allFlag is " + getAllFlag + " addFlag " + addNewFlag);
         this.json = json;
-
-        if ( getAllFlag ) {
-            try {
-                JSONArray temp = this.json.getJSONArray("threads");
-                for ( int i = 0; i < temp.length(); i++ ) {
-                    this.allThreads.add(this.gson.fromJson(temp.get(i).toString(), Threads.class));
-                    Log.d("oh", "This is the first in allthreads  " + this.allThreads.get(0).toString());
+        try {
+//            Log.d("A", "This is allThreads in passJson before load " + allThreads);
+            if ( this.json.has("threads") ) {
+                if ( allThreads != null ) {
+                    this.allThreads.clear();
                 }
-                getAllFlag = false;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if ( addNewflag ) {
-            try {
+                JSONArray temp = this.json.getJSONArray("threads");
+                for (int i = 0; i < temp.length(); i++) {
+                    if ( temp.getJSONObject(i).getString("user_id").equals(userID) ) {
+                        allThreads.add(this.gson.fromJson(temp.get(i).toString(), Threads.class));
+                    }
+                }
+                //adapter.clear();
                 setListView();
-            } catch (JSONException e) {
-                e.printStackTrace();
+//                getAllFlag = false;
+            } else if ( this.json.has("thread") ) {
+                getAllThreads();
             }
+            Log.d("A", "This is allThreads in passJson after load " + allThreads);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        flag = "";
+    }
+
+    public void getAllThreads() {
+        String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread";
+        String body = null;
+        new GetRequestsAsync(MessageThreadsActivity.this).execute(url, body, n, body2);
     }
 
     @Override
     public void getProgress(int progress) {
         this.progress = progress;
-        if (progress == 100) {
-            if (flag.equals("getAllFlag")) {
-                getAllFlag = true;
-            } else if (flag.equals("addNewFlag"))  {
-                addNewflag = true;
-            } else if (flag.equals("removeFlag")) {
-                addNewflag = false;
-            }
-        }
     }
 
-    public void setListView() throws JSONException {
-
-        JSONObject temp = this.json.getJSONObject("thread");
-        adapter.add(this.gson.fromJson(temp.toString(), Threads.class));
-        addNewflag = false;
-        Log.d("oh", "This is userTHreads in setListView " + userThreads.toString() + " the flag is " + addNewflag);
-
+    public void setListView()  {
+        threadAdapter.notifyDataSetChanged();
     }
 
 
 
-    public void removeThread(View view) {
-        flag = "removeFlag";
-        Threads thread = (Threads) view.getTag();
-
-        System.out.println("Value in removeThread " + thread);
-        //userThreads.remove(thread);
-        adapter.remove(thread);
-        String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread/delete/" + thread.getId();
+    @Override
+    public void deleteThread(String id) {
+        String url = "http://ec2-18-234-222-229.compute-1.amazonaws.com/api/thread/delete/" + id;
         String body = null;
-        new GetRequestsAsync(MessageThreadsActivity.this).execute(url,body,n);
+        new GetRequestsAsync(MessageThreadsActivity.this).execute(url, body, n, body2);
+        getAllThreads();
     }
 }
 

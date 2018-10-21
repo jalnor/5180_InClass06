@@ -17,7 +17,7 @@ public class ThreadChatroom extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thread_chatroom);
-        text=(TextView)findViewById(R.id.tv_pretty);
+        text = findViewById(R.id.tv_pretty);
         String dateString = "2018-09-25 15:00:47";
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
         Date convertedDate = new Date();

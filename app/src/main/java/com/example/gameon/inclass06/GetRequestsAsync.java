@@ -54,22 +54,34 @@ public class GetRequestsAsync extends AsyncTask<String, Integer, JSONObject> {
         Request request;
         Response response;
         JSONObject jo;
+        if ( strings[3] == null ) {
+            if (strings[1] == null) {
+                request = new Request.Builder()
+                        .url(strings[0])
+                        .header("Authorization", strings[2])
+                        .build();
+            } else {
+                RequestBody formBody = new FormBody.Builder()
+                        .add("title", strings[1])
+                        .build();
 
-        if ( strings[1] == null ) {
-            request = new Request.Builder()
-                    .url(strings[0])
-                    .header("Authorization", strings[2])
-                    .build();
+                request = new Request.Builder()
+                        .url(strings[0])
+                        .header("Authorization", strings[2])
+                        .post(formBody)
+                        .build();
+            }
         } else {
             RequestBody formBody = new FormBody.Builder()
-                    .add("title", strings[1])
-                    .build();
+                .add("message", strings[3])
+                .add("thread_id", strings[1])
+                .build();
 
             request = new Request.Builder()
-                    .url(strings[0])
-                    .header("Authorization", strings[2])
-                    .post(formBody)
-                    .build();
+                .url(strings[0])
+                .header("Authorization", strings[2])
+                .post(formBody)
+                .build();
         }
 
         try {

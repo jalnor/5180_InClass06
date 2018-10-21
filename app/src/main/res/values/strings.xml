@@ -19,5 +19,6 @@
     <string name="curr_thread">Current Threads</string>
     <string name="btn_whatever">button</string>
     <string name="message_et">Type Message To Send</string>
+    <string name="user_shared_preferences">UserPreferences</string>
 
 </resources>

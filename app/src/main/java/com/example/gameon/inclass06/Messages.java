@@ -4,18 +4,56 @@ import java.io.Serializable;
 
 public class Messages implements Serializable {
 
-    String username;
+    String user_fname;
+    String user_lname;
+    String user_id;
+    String id;
     String message;
     String created_at;
 
+
+
     public Messages(){ }
 
-    public String getUsername() {
-        return username;
+    public Messages(String user_fname, String user_lname, String user_id, String id, String message, String created_at) {
+        this.user_fname = user_fname;
+        this.user_lname = user_lname;
+        this.user_id = user_id;
+        this.id = id;
+        this.message = message;
+        this.created_at = created_at;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUser_fname() {
+        return user_fname;
+    }
+
+    public void setUser_fname(String user_fname) {
+        this.user_fname = user_fname;
+    }
+
+    public String getUser_lname() {
+        return user_lname;
+    }
+
+    public void setUser_lname(String user_lname) {
+        this.user_lname = user_lname;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getMessage() {
@@ -34,12 +72,25 @@ public class Messages implements Serializable {
         this.created_at = created_at;
     }
 
+
     @Override
     public String toString() {
         return "Messages{" +
-                "username='" + username + '\'' +
+                "user_fname='" + user_fname + '\'' +
+                ", user_lname='" + user_lname + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", id='" + id + '\'' +
                 ", message='" + message + '\'' +
                 ", created_at='" + created_at + '\'' +
                 '}';
     }
 }
+
+/*
+ "user_fname": "Bob",
+            "user_lname": "Smith",
+            "user_id": "1",
+            "id": "218",
+            "message": "hello",
+            "created_at": "2018-10-20 23:40:33"
+ */

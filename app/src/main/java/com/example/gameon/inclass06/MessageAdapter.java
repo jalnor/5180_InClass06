@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class MessageAdapter extends ArrayAdapter<Messages>{
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
 
-            com.example.gameon.inclass06.MessageAdapter.ViewHolder vh = null;
+            ViewHolder vh = null;
             //Threads str = getItem(position);
 
             if ( convertView == null ) {
@@ -44,10 +45,11 @@ public class MessageAdapter extends ArrayAdapter<Messages>{
                 vh = new com.example.gameon.inclass06.MessageAdapter.ViewHolder();
                 vh.messages = messages.get(position);
                 vh.message = convertView.findViewById(R.id.tv_message);
-                vh.username = convertView.findViewById(R.id.tv_username);
+                vh.userFname = convertView.findViewById(R.id.tv_user_frname);
+                vh.userFname = convertView.findViewById(R.id.tv_user_lname);
                 vh.pretty = convertView.findViewById(R.id.tv_pretty);
-                //vh.removeThread = convertView.findViewById(R.id.imageView);
-                //vh.removeThread.setTag(vh.Threads);
+                vh.removeMessage = convertView.findViewById(R.id.iv_trash);
+                vh.removeMessage.setTag(vh.messages);
                 convertView.setTag(vh);
             }else {
                 vh = (com.example.gameon.inclass06.MessageAdapter.ViewHolder) convertView.getTag();
@@ -58,7 +60,8 @@ public class MessageAdapter extends ArrayAdapter<Messages>{
                 //need to set the message from message edittext
                 vh.message.setText(vh.messages.getMessage());
                 //String uname = vh.Messages.getUsername();
-                vh.username.setText(vh.messages.getUsername());
+                vh.userFname.setText(vh.messages.getUser_fname());
+                vh.userLname.setText(vh.messages.getUser_lname());
                 //need to define pretty time
                //vh.pretty.setText(vh.Messages.getPretty());
             } catch (Exception e) {
@@ -71,7 +74,7 @@ public class MessageAdapter extends ArrayAdapter<Messages>{
 
         private static class ViewHolder {
             Messages messages;
-            TextView message, username, pretty;
-           // ImageView removeThread;
+            TextView message, userFname, userLname, pretty;
+            ImageView removeMessage;
         }
     }
