@@ -10,9 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.io.IOException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -52,10 +50,13 @@ public class SignupActivity extends AppCompatActivity {
                 String rp = rpassword.getText().toString();
 
 
+
+                if (f.isEmpty() || l.isEmpty() || e.isEmpty() || p.isEmpty() || rp.isEmpty()) {
+                    Toast.makeText(SignupActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                }
+
                 if ( isValidEmail(e) ) {
-                    if (f.isEmpty() || l.isEmpty() || e.isEmpty() || p.isEmpty() || rp.isEmpty()) {
-                        Toast.makeText(SignupActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
-                    } else if (rp.equals(p)) {
+                    if (rp.equals(p)) {
                         signUp(f, l, e, p);
                     } else {
                         Toast.makeText(SignupActivity.this, "Password  mismatch", Toast.LENGTH_SHORT).show();
@@ -105,7 +106,13 @@ public class SignupActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(SignupActivity.this, "Signup Failed!", Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SignupActivity.this, "Signup Failed!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 e.printStackTrace();
             }
 
