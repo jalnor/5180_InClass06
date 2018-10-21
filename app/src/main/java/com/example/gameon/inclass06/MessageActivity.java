@@ -106,7 +106,7 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
     @Override
     public void passJson(JSONObject json) {
         this.json = json;
-        Log.d("oh", "This is the value of the flag: " + flag);
+
         try {
             if ( this.json.has("messages")) {
                 if( this.messages != null ) {
@@ -116,6 +116,7 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
                 for (int i = 0; i < messageArray.length(); i++) {
                     this.messages.add(gson.fromJson(messageArray.get(i).toString(), Messages.class));
                 }
+                Log.d("oh", "This length of messageArray is  " + messageArray.length());
                 setMessageView();
             } else if ( this.json.has("message") ) {
                 getAllMessages();
@@ -153,5 +154,6 @@ public class MessageActivity extends AppCompatActivity implements GetRequestsAsy
         String body = null;
         body2 = null;
         new GetRequestsAsync(MessageActivity.this).execute(url, body, token, body2);
+        getAllMessages();
     }
 }
