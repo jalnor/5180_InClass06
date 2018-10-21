@@ -1,3 +1,8 @@
+/*
+Assignment HW#6
+Page ThreadTHreadAdapter.java
+Authors Jarrod Norris, Abinandaraj Rajendran, Carrie Mao
+ */
 package com.example.gameon.inclass06;
 
 import android.support.annotation.NonNull;
@@ -8,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 public class ThreadThreadAdapter extends RecyclerView.Adapter<ThreadThreadAdapter.ViewHolder> {

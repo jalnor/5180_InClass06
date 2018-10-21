@@ -1,3 +1,9 @@
+<!--
+Assignment HW#6
+Page strings.xml
+Authors Jarrod Norris, Abinandaraj Rajendran, Carrie Mao
+-->
+
 <resources>
     <string name="app_name">InClass06</string>
     <string name="email"></string>

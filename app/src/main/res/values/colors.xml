@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Assignment HW#6
+Page colors.xml
+Authors Jarrod Norris, Abinandaraj Rajendran, Carrie Mao
+-->
 <resources>
     <color name="colorPrimary">#000000</color>
     <color name="colorPrimaryDark">#ffffff</color>

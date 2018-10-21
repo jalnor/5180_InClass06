@@ -1,6 +1,6 @@
 /*
 Assignment HW#6
-Page
+Page MessageAdapter.java
 Authors Jarrod Norris, Abinandaraj Rajendran, Carrie Mao
  */
 
@@ -13,9 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import org.ocpsoft.prettytime.PrettyTime;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
